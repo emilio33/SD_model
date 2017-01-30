@@ -1,0 +1,507 @@
+{UTF-8}
+Pérdida de hábitat=
+	IF THEN ELSE(Embarcaciones en operación>Banderas iniciales, ((3.1416*Radio de afectación\
+		*Radio de afectación)/10000)*Embarcaciones en operación*Efecto de cada embarcación\
+		, 0)
+	~	ha
+	~	Área total (ha) afectada por la perturbación ocasionada por el total de \
+		embarcaciones. Considerando que se operan 30 días durante 3 meses
+	|
+
+Pérdida de ballenas=
+	((Zona de observación inicial+Zona de restricción inicial)-Hábitat ballenas)*Densidad de ballenas
+	~	ballenas
+	~	El área perdida de hábitat por la densidad de ballenas en lo que queda de hábitat:
+		(hábitat inicial - hábitat actual) * densidad de ballenas en ese momento
+		[ha * (ballenas/ha)]
+	|
+
+Densidad de ballenas=
+	Poblacion ballenas/Hábitat ballenas
+	~	ballenas/ha
+	~	2101 ballenas / 11,000 ha
+	|
+
+Hábitat ballenas= INTEG (
+	-Pérdida de hábitat,
+		Zona de observación inicial+Zona de restricción inicial)
+	~	ha
+	~		|
+
+Poblacion ballenas= INTEG (
+	Crecimiento poblacional-Pérdida de ballenas,
+		Población ballenas inicial)
+	~	ballenas
+	~		|
+
+Población ballenas inicial=
+	2101
+	~	
+	~	Pobalción de ballenas inicial
+	|
+
+Ballenas por turista=
+	Poblacion ballenas/T
+	~	
+	~		|
+
+k ballenas=
+	3000
+	~	ballenas [0,10000,100]
+	~		|
+
+Crecimiento poblacional=
+	r ballenas*Poblacion ballenas*(1-(Poblacion ballenas/k ballenas))
+	~	ballenas
+	~		|
+
+r ballenas=
+	0.025
+	~	 [0,1,0.001]
+	~	Tasa estimada entre el 2.5% y el 3.2% para la población del Pacífico oeste \
+		(Bradford et al. 2008. Population abundance and growth rate of western
+		gray whales Eschrichtius robustus)
+	|
+
+Índice satisfacción=
+	Ballenas por turista/Ballenas ideal por turista
+	~	
+	~	Mide la distancia entre lo real y lo ideal, si son iguales entonces el \
+		índice de satisfacción es 1, si lo real es mayor a lo ideal, el índice \
+		es mayor a 1
+	|
+
+Salida T=
+	T*Proporción de retiro
+	~	
+	~	Tasa de salida de turistas
+	|
+
+T= INTEG (
+	Entrada T-Salida T,
+		10000)
+	~	
+	~		|
+
+Entrada T=
+	Crecimiento OT*Tasa de ocupación real*Turistas por habitación*Índice satisfacción
+	~	
+	~	Tasa de llegada de turistas
+	|
+
+Tasa de ocupación real=
+	T/(OT*Turistas por habitación)
+	~	
+	~	Tasa real de ocupación en función del grado de satisfacción del turista
+	|
+
+Crecimiento OT=
+	r OT*OT*(1-(OT/K turismo))
+	~	
+	~		|
+
+r OT=
+	(r OTinicial* Tasa de ocupación real )/Tasa de ocupación stdt
+	~	
+	~		|
+
+OT= INTEG (
+	Crecimiento OT,
+		100)
+	~	
+	~		|
+
+r OTinicial=
+	0.05
+	~	 [0,1,0.01]
+	~		|
+
+K turismo=
+	5000
+	~	
+	~		|
+
+Zona de restricción inicial=
+	7333
+	~	ha
+	~		|
+
+Zona de observación inicial=
+	3667
+	~	ha
+	~	Superficie inicial (ha) de la zona de observación que funciona como \
+		hábitat de crianza y reproducción
+	|
+
+Banderas adicionales=
+	2
+	~	
+	~	Número de banderas adicionales que se suman a las ya en operación \
+		debidas a la entrada de turistas por encima de un umbral
+	|
+
+Total banderas adicionales= INTEG (
+	IF THEN ELSE(Entrada T>Factor de incremento, +Banderas adicionales,0),
+		0)
+	~	
+	~		|
+
+Ballenas ideal por turista=
+	0.2101
+	~	 [0,1,0.01]
+	~		|
+
+Banderas iniciales=
+	22
+	~	
+	~		|
+
+Efecto de cada embarcación=
+	0.01
+	~	
+	~	Efecto subletal de cada embarcación sobre la adecuación de la población \
+		de ballenas
+	|
+
+Embarcaciones en operación=
+	Banderas iniciales+Total banderas adicionales
+	~	
+	~	Número de embarcaciones que simultáneamente están en operación
+	|
+
+Factor de incremento=
+	200
+	~	 [0,500,50]
+	~	Entrada de turistas que al sobrepasarse genera un incremento en el número \
+		de embarcaciones en operación
+	|
+
+Radio de afectación=
+	150
+	~	metros
+	~	Radio de afectación de cada embarcación
+	|
+
+Proporción de retiro=
+	0.01
+	~	 [0,1,0.01]
+	~		|
+
+Tasa de ocupación stdt=
+	0.8
+	~	 [0,1,0.01]
+	~	Tasa de ocupación esperada
+	|
+
+Turistas por habitación=
+	100
+	~	
+	~	Ocupación anual por cuarto
+	|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,59,0
+10,1,T,874,279,43,22,3,131,0,0,0,0,0,0
+12,2,48,704,273,10,8,0,3,0,0,-1,0,0,0
+1,3,5,1,4,0,0,22,0,0,0,-1--1--1,,1|(803,272)|
+1,4,5,2,100,0,0,22,0,0,0,-1--1--1,,1|(738,272)|
+11,5,48,769,272,6,8,34,3,0,0,1,0,0,0
+10,6,Entrada T,769,291,37,11,40,131,0,0,-1,0,0,0
+12,7,48,1079,272,10,8,0,3,0,0,-1,0,0,0
+1,8,10,7,4,0,0,22,0,0,0,-1--1--1,,1|(1030,275)|
+1,9,10,1,100,0,0,22,0,0,0,-1--1--1,,1|(948,275)|
+11,10,48,986,275,6,8,34,3,0,0,1,0,0,0
+10,11,Salida T,986,294,27,11,40,3,0,0,-1,0,0,0
+1,12,1,11,1,0,0,0,0,64,0,-1--1--1,,1|(940,210)|
+10,13,Tasa de ocupación real,663,119,50,19,8,3,0,0,0,0,0,0
+10,14,Tasa de ocupación stdt,543,22,47,19,8,3,0,0,0,0,0,0
+10,15,Turistas por habitación,893,63,41,26,8,131,0,0,0,0,0,0
+10,16,Proporción de retiro,1158,178,41,20,8,131,0,0,0,0,0,0
+10,17,Efecto de cada embarcación,1556,129,48,19,8,131,0,0,0,0,0,0
+10,18,Embarcaciones en operación,1362,450,52,22,8,131,0,0,0,0,0,0
+10,20,Radio de afectación,1692,125,47,19,8,3,0,0,0,0,0,0
+10,24,Total banderas adicionales,1139,441,42,25,8,131,0,0,0,0,0,0
+10,25,Banderas iniciales,1385,291,31,19,8,131,0,0,0,0,0,0
+10,26,Factor de incremento,1028,332,42,19,8,3,0,0,0,0,0,0
+1,27,26,24,1,0,0,0,0,64,0,-1--1--1,,1|(1054,381)|
+1,28,25,18,1,0,0,0,0,64,0,-1--1--1,,1|(1271,352)|
+1,29,24,18,1,0,0,0,0,64,0,-1--1--1,,1|(1171,491)|
+1,30,6,24,1,0,0,0,0,64,0,-1--1--1,,1|(911,438)|
+10,31,Ballenas por turista,956,629,46,19,8,131,0,0,0,0,0,0
+10,32,Ballenas ideal por turista,479,566,44,25,8,131,0,0,0,0,0,0
+10,33,Banderas adicionales,1160,327,35,19,8,3,0,0,0,0,0,0
+1,34,33,24,1,0,0,0,0,64,0,-1--1--1,,1|(1110,363)|
+10,35,Zona de observación inicial,1665,767,42,28,8,131,0,2,0,0,0,0,-1--1--1,160-160-160,|12||128-128-128
+10,36,Zona de restricción inicial,1525,785,45,28,8,131,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-128-128
+10,38,OT,474,234,40,20,3,3,0,0,0,0,0,0
+12,39,48,283,235,10,8,0,3,0,0,-1,0,0,0
+1,40,42,38,4,0,0,22,0,0,0,-1--1--1,,1|(399,235)|
+1,41,42,39,100,0,0,22,0,0,0,-1--1--1,,1|(322,235)|
+11,42,48,358,235,6,8,34,3,0,0,1,0,0,0
+10,43,Crecimiento OT,358,254,51,11,40,3,0,0,-1,0,0,0
+10,44,K turismo,220,341,32,11,8,3,0,0,0,0,0,0
+1,45,44,43,1,0,0,0,0,64,0,-1--1--1,,1|(316,307)|
+10,46,r OT,379,85,17,11,8,3,0,0,0,0,0,0
+10,47,r OTinicial,188,17,34,11,8,3,0,0,0,0,0,0
+1,48,47,46,1,0,0,0,0,64,0,-1--1--1,,1|(315,21)|
+1,49,15,13,1,0,0,0,0,64,0,-1--1--1,,1|(761,68)|
+1,50,15,6,1,0,0,0,0,64,0,-1--1--1,,1|(780,188)|
+1,51,43,6,1,0,0,0,0,64,0,-1--1--1,,1|(495,312)|
+1,52,1,13,1,0,0,0,0,64,0,-1--1--1,,1|(853,198)|
+1,53,13,46,1,0,0,0,0,64,0,-1--1--1,,1|(491,127)|
+1,54,14,46,1,0,0,0,0,64,0,-1--1--1,,1|(446,30)|
+1,55,13,6,1,0,0,0,0,64,0,-1--1--1,,1|(691,217)|
+1,56,46,43,1,0,0,0,0,64,0,-1--1--1,,1|(336,126)|
+1,57,38,43,1,0,0,0,0,64,0,-1--1--1,,1|(375,197)|
+1,58,38,13,1,0,0,0,0,64,0,-1--1--1,,1|(583,226)|
+10,59,Índice satisfacción,669,481,57,11,8,3,0,0,0,0,0,0
+1,60,31,59,1,0,0,0,0,64,0,-1--1--1,,1|(763,621)|
+1,61,59,6,1,0,0,0,0,64,0,-1--1--1,,1|(724,409)|
+1,62,16,11,1,0,0,0,0,64,0,-1--1--1,,1|(1019,152)|
+1,63,1,31,1,0,0,0,0,64,0,-1--1--1,,1|(940,434)|
+1,64,32,59,1,0,0,0,0,64,0,-1--1--1,,1|(611,568)|
+12,65,0,329,742,270,80,3,135,0,8,-1,0,0,0,-1--1--1,0-0-0,|18||0-0-0
+El índice de satisfacción es la relación entre lo real y lo ideal, si lo real es mayor que lo ideal (<0.21) entonces el índice es mayor a  1; si el factor de ballenas ideal por turista es mayor que el real (>0.21) entonces el índice es siempre menor a 1
+10,66,r ballenas,2031,651,31,11,8,3,0,0,0,0,0,0
+10,67,k ballenas,1913,748,32,11,8,3,0,0,0,0,0,0
+10,68,Poblacion ballenas,1712,600,39,25,3,131,0,0,0,0,0,0
+12,69,48,1948,604,10,8,0,3,0,0,-1,0,0,0
+1,70,72,68,4,0,0,22,0,0,0,-1--1--1,,1|(1797,604)|
+1,71,72,69,100,0,0,22,0,0,0,-1--1--1,,1|(1897,604)|
+11,72,48,1850,604,6,8,34,3,0,0,1,0,0,0
+10,73,Crecimiento poblacional,1850,631,39,19,40,3,0,0,-1,0,0,0
+1,74,66,73,1,0,0,0,0,64,0,-1--1--1,,1|(1966,682)|
+1,75,67,73,1,0,0,0,0,64,0,-1--1--1,,1|(1854,714)|
+1,76,68,72,1,0,0,0,0,64,0,-1--1--1,,1|(1786,551)|
+1,77,68,31,1,0,0,0,0,64,0,-1--1--1,,1|(1159,719)|
+10,78,Densidad de ballenas,1908,485,41,19,8,3,0,0,0,0,0,0
+10,79,Población ballenas inicial,2012,840,59,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-128-128
+1,80,68,78,1,0,0,0,0,64,0,-1--1--1,,1|(1772,512)|
+12,81,48,1510,604,10,8,0,3,0,0,-1,0,0,0
+1,82,84,81,4,0,0,22,0,0,0,-1--1--1,,1|(1556,604)|
+1,83,84,68,100,0,0,22,0,0,0,-1--1--1,,1|(1639,604)|
+11,84,48,1599,604,6,8,34,3,0,0,1,0,0,0
+10,85,Pérdida de ballenas,1599,633,45,21,40,131,0,0,-1,0,0,0
+1,86,78,85,1,0,0,0,0,64,0,-1--1--1,,1|(1720,495)|
+1,87,79,68,0,0,0,0,0,64,1,-1--1--1,,1|(1871,727)|
+1,88,36,85,1,0,0,0,0,64,0,-1--1--1,,1|(1561,729)|
+1,89,35,85,1,0,0,0,0,64,0,-1--1--1,,1|(1653,690)|
+10,90,Hábitat ballenas,1828,329,40,20,3,3,0,0,0,0,0,0
+12,91,48,1560,326,10,8,0,3,0,0,-1,0,0,0
+1,92,94,91,4,0,0,22,0,0,0,-1--1--1,,1|(1608,325)|
+1,93,94,90,100,0,0,22,0,0,0,-1--1--1,,1|(1723,325)|
+11,94,48,1652,325,6,8,34,3,0,0,1,0,0,0
+10,95,Pérdida de hábitat,1652,344,57,11,40,3,0,0,-1,0,0,0
+1,97,90,78,1,0,0,0,0,64,0,-1--1--1,,1|(1936,444)|
+1,98,90,85,1,0,0,0,0,64,0,-1--1--1,,1|(1641,459)|
+1,99,35,90,0,0,0,0,0,64,1,-1--1--1,,1|(1745,550)|
+1,100,36,90,0,0,0,0,0,64,1,-1--1--1,,1|(1674,558)|
+1,101,20,95,1,0,0,0,0,64,0,-1--1--1,,1|(1727,233)|
+1,102,17,95,1,0,0,0,0,64,0,-1--1--1,,1|(1613,210)|
+1,103,18,95,1,0,0,0,0,64,0,-1--1--1,,1|(1510,428)|
+1,104,25,95,1,0,0,2,3,64,0,128-128-128,|0||-1--1--1,1|(1509,257)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 2
+$192-192-192,0,Times New Roman|20|B|0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,5,0
+12,1,2885488,1576,1053,108,41,3,252,0,0,0,0,0,0
+Efecto de cada embarcación,0,0.5,0.01
+12,2,2688908,2216,641,410,210,3,188,0,0,1,0,0,0
+P_ballenas
+12,3,2492320,1364,199,407,208,3,188,0,0,1,0,0,0
+Embarcaciones_en_operación
+12,4,1901854,2211,207,416,217,3,188,0,0,1,0,0,0
+Zona_de_observación
+12,5,1574390,215,1055,122,45,3,252,0,0,0,0,0,0
+K turismo,500,25000,100
+12,6,3278038,205,910,102,35,3,252,0,0,0,0,0,0
+r OTinicial,0,0.2,0.01
+12,7,1901950,1182,1051,111,38,3,252,0,0,0,0,0,0
+Ballenas ideal por turista,0,5,0.1
+12,8,2033544,851,1048,123,38,3,252,0,0,0,0,0,0
+Factor de incremento,0,1000,1
+12,9,1573952,1484,915,114,36,3,252,0,0,0,0,0,0
+Radio de afectación,0,500,25
+12,10,1835192,1359,642,404,213,3,188,0,0,1,0,0,0
+Embarcaciones-ballenas
+12,11,2229444,1137,917,117,37,3,252,0,0,0,0,0,0
+Banderas iniciales,0,50,1
+12,12,853544,501,1054,102,42,3,252,0,0,0,0,0,0
+Turistas por habitación,20,150,5
+12,13,1443786,787,917,102,33,3,252,0,0,0,0,0,0
+Tasa de ocupación stdt,0,1,0.01
+12,14,853458,1909,1061,98,36,3,252,0,0,0,0,0,0
+,0,0.2,0.01
+12,15,1246620,1844,916,143,43,3,252,0,0,0,0,0,0
+Zona de observación inicial,2000,11000,100
+12,16,1246606,552,642,367,212,3,188,0,0,1,0,0,0
+Turistas
+12,17,1377592,560,202,373,210,3,188,0,0,1,0,0,0
+Cuartos
+12,18,1705312,2560,919,113,45,3,252,0,0,0,0,0,0
+Zona de restricción inicial,0,11000,100
+12,19,2360682,2564,1061,126,45,3,252,0,0,0,0,0,0
+Población ballenas inicial,0,0.2,0.01
+12,20,1836412,2214,923,117,41,3,252,0,0,0,0,0,0
+,0,1,0.01
+12,21,984352,2241,1066,126,37,3,252,0,0,0,0,0,0
+ballenas,1,2,0.01
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 3
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,5,0
+///---\\\
+:GRAPH P_ballenas
+:TITLE Población de ballenas
+:X-LABEL Tiempo de simulación
+:X-DIV 4
+:Y-DIV 4
+:X-MIN 0
+:X-MAX 100
+:SOFT-BOUNDS
+:NO-LEGEND 5
+:SCALE
+:VAR Población ballenas|Población ballenas
+:Y-MIN 0
+:Y-MAX 1500
+
+:GRAPH Embarcaciones_en_operación
+:TITLE Embarcaciones en operación
+:X-LABEL Tiempo de simulación
+:X-DIV 4
+:Y-DIV 4
+:X-MIN 0
+:X-MAX 100
+:SOFT-BOUNDS
+:NO-LEGEND 5
+:SCALE
+:VAR Embarcaciones en operación
+:Y-MIN 0
+:Y-MAX 150
+
+:GRAPH Zona_de_observación
+:TITLE Zonas de observación y restricción
+:X-DIV 4
+:Y-DIV 4
+:X-MIN 0
+:X-MAX 100
+:WIDTH 5
+:HEIGHT 4
+:NO-LEGEND 4
+:SCALE
+:VAR Zona de observación
+:Y-MIN 0
+:Y-MAX 20000
+:VAR Zona de restricción
+
+:GRAPH Turismo
+:TITLE T OT
+:X-DIV 4
+:X-MIN 0
+:X-MAX 100
+:SOFT-BOUNDS
+:NO-LEGEND 6
+:SCALE
+:VAR OT|Cuartos
+:SCALE
+:VAR T|Turistas
+
+:GRAPH Embarcaciones-ballenas
+:TITLE Embarcaciones - Ballenas
+:X-AXIS Embarcaciones en operación
+:X-DIV 5
+:X-MIN 0
+:X-MAX 250
+:SOFT-BOUNDS
+:NO-LEGEND 5
+:SCALE
+:VAR Población ballenas|Embarcaciones
+:Y-MIN 0
+:Y-MAX 1500
+
+:GRAPH Turistas
+:TITLE Número de turistas
+:X-DIV 4
+:Y-DIV 5
+:X-MIN 0
+:X-MAX 100
+:WIDTH 5
+:HEIGHT 3.5
+:SOFT-BOUNDS
+:NO-LEGEND 5
+:SCALE
+:VAR T
+:Y-MIN 0
+:Y-MAX 12000
+
+:GRAPH Cuartos
+:TITLE Número de cuartos
+:X-DIV 4
+:Y-DIV 5
+:X-MIN 0
+:X-MAX 100
+:WIDTH 5
+:HEIGHT 4
+:NO-LEGEND 5
+:SCALE
+:VAR OT
+:Y-MIN 0
+:Y-MAX 2000
+:L<%^E!@
+1:OL_2017_1.vdf
+9:OL_2017_1
+22:$,Dollar,Dollars,$s
+22:Day,Days
+22:Hour,Hours
+22:Month,Months
+22:Person,People,Persons
+22:Unit,Units
+22:Week,Weeks
+22:Year,Years
+23:0
+15:0,0,0,0,0,0
+19:59,0
+27:2,
+34:0,
+4:Time
+5:Hábitat ballenas
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:0
+41:0
+42:0
+24:0
+25:100
+26:100
