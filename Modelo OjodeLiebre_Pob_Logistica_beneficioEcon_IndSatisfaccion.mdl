@@ -1,4 +1,10 @@
 {UTF-8}
+OT= INTEG (
+	IF THEN ELSE(Entrada T>0, Crecimiento OT , 0 ),
+		100)
+	~	
+	~		|
+
 Gasto medio turistas 1dia=
 	35
 	~	USD
@@ -156,12 +162,6 @@ r OT=
 	~	
 	~		|
 
-OT= INTEG (
-	Crecimiento OT,
-		100)
-	~	
-	~		|
-
 r OTinicial=
 	0.05
 	~	 [0,1,0.01]
@@ -185,7 +185,7 @@ Zona de observación inicial=
 	|
 
 Banderas adicionales=
-	1
+	2
 	~	 [0,25,1]
 	~	Número de banderas adicionales que se suman a las ya en operación \
 		debidas a la entrada de turistas por encima de un umbral
@@ -246,9 +246,12 @@ Tasa de ocupación stdt=
 	|
 
 Turistas por habitación=
-	100
+	60
 	~	
-	~	Ocupación anual por cuarto
+	~	Ocupación anual por cuarto (sale de Brenner et al. 2016 y DENUE) el \
+		promedio de 18 temporadas es 9,547 turistas y hay 16 establecimientos \
+		(DENUE) que suponiendo que tengan 10 cuartos cada establecimiento me da 60 \
+		tusitas por cuarto
 	|
 
 ********************************************************
@@ -394,6 +397,7 @@ $192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,6
 10,110,Gasto medio turistas que pernoctan,1121,196,65,19,8,3,0,0,0,0,0,0
 1,111,109,97,1,0,0,0,0,64,0,-1--1--1,,1|(717,104)|
 1,112,110,96,1,0,0,0,0,64,0,-1--1--1,,1|(997,227)|
+1,114,6,33,1,0,0,0,0,64,0,-1--1--1,,1|(448,363)|
 \\\---/// Sketch information - do not modify anything except names
 V300  Do not put anything below this section - it will be ignored
 *View 2
@@ -558,7 +562,7 @@ $192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,5
 27:2,
 34:0,
 4:Time
-5:Poblacion ballenas
+5:T
 35:Date
 36:YYYY-MM-DD
 37:2000
