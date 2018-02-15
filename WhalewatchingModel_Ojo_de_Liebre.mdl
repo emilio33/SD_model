@@ -139,12 +139,16 @@ Initial whale abundance=
 	|
 
 Whale carrying capacity in the lagoon=
-	3000
-	~	individuals [0,10000,100]
-	~	According to Brenner et al. 2016 ("The economic benefits of whale watching \
-		in El Vizcaíno Biosphere") the maximum number of whales in Ojo de Liebre \
-		was around 2,700 whales in the 2012 season. Thus, we established the \
-		carrying capacity in 3,000 whales
+	2000
+	~	individuals [0,3000,100]
+	~	According to Brenner et al. (2016) the maximum number of whales, in the \
+		period 1996-2014, in Ojo de Liebre was about 2,700 whales (in 2012). Also, \
+		according to the IUCN (The IUCN Red List of Threatened Species™ ISSN \
+		2307-8235 (online) IUCN 2008: T8097A12885255): “The population has \
+		probably reached a size where it exceeds the carrying capacity of the \
+		environment in years where food availability is below average”. Thus, we \
+		established the maximum carrying capacity of whales in Ojo de Liebre as \
+		3,000 individuals.
 	|
 
 Whale growth=
